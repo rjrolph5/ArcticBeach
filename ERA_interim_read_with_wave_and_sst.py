@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+/ # -*- coding: utf-8 -*-
 """
 Created on Thu Jun 18 13:24:35 2020
 
@@ -6,7 +6,7 @@ Reads ERA-interim reanalysis data.  Wave height, wave period and sea surface tem
 force the erosion model and wind data can be used to force storm surge module (that is coupled to the erosion
 model).
 
-@author: rrolph, rebecca.rolph@awi.de
+@author: rebecca.rolph@awi.de
 """
 
 import numpy as np
@@ -27,7 +27,7 @@ def geo_idx(dd, dd_array):
 def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 
 	## specify input filenames
-	ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/' # for pls11
+	ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/' # for pls11.  Put path of where your ERA data is here.
 
 	# u-component of wind
 	uwind_ifile = ncfile_path + 'uwind/ERAintforcing_Arctic_uwind_'+ str(start_datetime.year) +'0101_'+str(start_datetime.year)+'1231.nc'
@@ -144,7 +144,7 @@ def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 	# also checked that wave period is nan except during the open water season, so that means the dataframe has been concatenated correctly.
 
 	# peak swh (signifcant wave height). only every 6h not every 3h is the orig input file
-	swh_ifile = ncfile_path + 'swh/ERAintforcing_Arctic_swh_' + str(start_datetime.year) + '0101_' + str(start_datetime.year) + '1231.nc' # this ifile contains all lats, unlike the rest of th ifiles which contain only arctic lats.
+	swh_ifile = ncfile_path + 'swh/ERAintforcing_Arctic_swh_' + str(start_datetime.year) + '0101_' + str(start_datetime.year) + '1231.nc' # this ifile contains all lats, unlike the rest of the ifiles which contain only arctic lats.
 	fh = Dataset(swh_ifile, mode= 'r')
 	swh = fh.variables['swh'][:]
 	lats_swh = fh.variables['latitude'][:] # lats are from 90, 89.25, ..., 0, ... -89.25, -90

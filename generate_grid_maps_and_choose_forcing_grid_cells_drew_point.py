@@ -15,8 +15,24 @@ import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
 from mpl_toolkits.basemap import Basemap, addcyclic
 
+# This is a plotting script to identify the offshore grid cell for each community
 
-# create a mask to apply to water levels based on sst threshold of a certain area.  
+# At the moment, there are separate scripts for each study site but they can easily be combined into one script with a user-input community name and lat lon.
+
+###### set paths ######
+
+# path where you save the lat lon and index information of the grid cells selected in this script.
+#basepath = '/home/rrolph/erosion_model/input_data/storm_surge/'
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/input_data/storm_surge/'
+
+# path where the maps generated in this script are saved
+#plot_basepath = '/home/rrolph/erosion_model_output_figures_too_large_for_github/'
+plot_basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/plots/'
+
+# Reanalysis data basepath
+ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/' # for pls11. Change path to wherever your reanalysis data is stored.
+
+######################
 
 def geo_idx(dd, dd_array):
 	"""
@@ -28,19 +44,17 @@ def geo_idx(dd, dd_array):
 	return geo_idx
 
 year = 2011
+
 ## input lat lon of site where retreat rates are measured
-lat_site = 71.78 # [degrees North]
-lon_site = 129.41 # [positive means degrees East, negative is degrees West]
+lat_site = 70.88 # [degrees North]
+lon_site = -153.92 # [positive means degrees East, negative is degrees West]
 
 start_date = str(year) + '-01-01'  # make month padded with preceding zero (e.g. july is 07 and not 7) , same with daynumber e.g. 2007-07-01 is july 1st).
 end_date = str(year) + '-12-31'
 
-## start def 
+## start def
 start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
 end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
-
-# databasepath
-ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/' # for pls11
 
 # sea ice concentration input file
 sicn_ifile = ncfile_path + 'ci_with_mask/ERAintforcing_Arctic_ci_' + str(year) + '0101_' + str(year) + '1231_with_mask.nc'
@@ -75,26 +89,31 @@ lon_idx = geo_idx(lon_site,lons)
 lat_site_ERAI = lats[lat_idx]
 lon_site_ERAI = lons[lon_idx]
 
-### save lat and lon of site on era grid.
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/lat_site_ERAI_mamontovy.npy',lat_site_ERAI)
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/lon_site_ERAI_mamontovy.npy',lon_site_ERAI)
+### save lat and lon of site on ERA grid
+np.save(basepath + 'Drew_Point/lat_site_ERAI_Drew_Point.npy',lat_site_ERAI)
+np.save(basepath + 'Drew_Point/lon_site_ERAI_Drew_Point.npy',lon_site_ERAI)
 
-# choose an offshore grid cell where the sicn, winds, SST will be taken from  ##################################### INPUT VARIABLE TO DETERMINE LOCATION OF WHERE WINDS AND SICN TAKEN FROM ############
+
+###### offshore grid cell #######
+
+
+# choose an offshore grid cell where the sicn, winds, SST will be taken from ######## this is an input variable later used in ArcticBeach that determines which grid cell of ERA-I that the forcing data comes from! This script is 
+# used so you can look around the map produced here if you want to change grid cell locations from which you drive ArcticBeach ###############
 lat_offshore_idx = lat_idx - 1
 lon_offshore_idx = lon_idx
 
 # save the offshore indices 
-lat_offshore_site_ERAI_mamontovy_hayata = lats[lat_offshore_idx]
-lon_offshore_site_ERAI_mamontovy_hayata = lons[lon_offshore_idx]
+lat_offshore_site_ERAI = lats[lat_offshore_idx]
+lon_offshore_site_ERAI = lons[lon_offshore_idx]
 
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/lat_offshore_site_ERAI_mamontovy_hayata.npy',lat_offshore_site_ERAI_mamontovy_hayata)
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/lon_offshore_site_ERAI_mamontovy_hayata.npy',lon_offshore_site_ERAI_mamontovy_hayata)
+np.save(basepath + 'Drew_Point/lat_offshore_site_ERAI_Drew_Point.npy',lat_offshore_site_ERAI)
+np.save(basepath + 'Drew_Point/lon_offshore_site_ERAI_Drew_Point.npy',lon_offshore_site_ERAI)
 
 # plot the sicn and grid cells of site and offshore selected point in a snapshot of example sicn
 m = Basemap(projection='npstere', boundinglat=65, lon_0=0, resolution='l')
 
 # wrap data to cover all lons
-sicn_wrapped, lons_wrapped = addcyclic(sicn[0,:,:],lons)
+sicn_wrapped, lons_wrapped = addcyclic(sicn[30*5*8,:,:],lons) # select timestamp in 0 index for which sea ice snapshot you wish to plot.
 mask_wrapped, lons_wrapped_mask = addcyclic(mask[0,:,:],lons_mask)
 
 # get lat/lon formatted
@@ -104,8 +123,7 @@ x, y = np.meshgrid(lons_wrapped,lats)
 px,py=m(x,y)
 
 # create figure and axes handles
-#fig = plt.figure(figsize=(10,10))
-fig = plt.figure()
+fig = plt.figure(figsize=(10,10))
 
 cmap = cmocean.cm.ice
 
@@ -153,13 +171,12 @@ def polar_stere(lon_w, lon_e, lat_s, lat_n, **kwargs):
 
 
 # create figure and axes handles
-#fig = plt.figure(figsize=(10,10))
-fig = plt.figure()
+fig = plt.figure(figsize=(10,10))
 
-lllon = 125
-urlon = 139
-lllat = 70
-urlat = 74
+lllon = -160
+urlon = -145
+lllat = 69
+urlat = 73
 
 m_zoom = polar_stere(lllon, urlon, lllat, urlat)
 
@@ -173,6 +190,9 @@ xmax, ymax = m_zoom(urlon, urlat)
 # plot data over map
 m_zoom.pcolor(px,py, sicn_wrapped,cmap=cmap)
 
+# plot ERAI land mask
+#m_zoom.pcolor(px,py, mask_wrapped[0:43,:])
+
 # add extras
 m_zoom.drawcoastlines()
 m_zoom.bluemarble()
@@ -180,11 +200,12 @@ m_zoom.bluemarble()
 ## mark where site is
 # get indices of site on projection coords
 
-# mamontovy-hayata retreat loc/marker
+# site retreat loc/marker
 px_site, py_site = m_zoom(lon_site_ERAI + 0.75/2, lat_site_ERAI - 0.75/2)
+#px_site, py_site = m_zoom(lon_site_ERAI, lat_site_ERAI)
 m_zoom.scatter(px_site, py_site, marker='*', s=100, color ='r', zorder=5)
 # drew point text label
-px_site_label, py_site_label = m_zoom(lon_site_ERAI-7, lat_site_ERAI+3)
+#px_site_label, py_site_label = m_zoom(lon_site_ERAI-7, lat_site_ERAI+3)
 #plt.text(px_site_label, py_site_label, 'Drew Point', fontsize=16, fontweight='bold',color='r')
 
 # plot the offshore point
@@ -192,18 +213,12 @@ px_site_label, py_site_label = m_zoom(lon_site_ERAI-7, lat_site_ERAI+3)
 px_site, py_site = m_zoom(lons[lon_offshore_idx] + 0.75/2, lats[lat_offshore_idx] - 0.75/2)
 m_zoom.scatter(px_site, py_site, marker='o', s=100, color ='r', zorder=5)
 # label
-px_site_label, py_site_label = m_zoom(lons[lon_offshore_idx]-7, lats[lat_offshore_idx]+3)
+#px_site_label, py_site_label = m_zoom(lons[lon_offshore_idx]-7, lats[lat_offshore_idx]+3)
 #plt.text(px_site_label, py_site_label, 'Offshore point', fontsize=16, fontweight='bold',color='r')
 
-## plot mask from era interim instead of blue marble ###################################################### i like the blue marble but this can be added in later as necesssary.
-# set the grid cells that have any part of land as 1
-#inds_where_mask_greater0 = np.where(mask_wrapped.data > 0)
-#mask_wrapped[inds_where_mask_greater0)
-#m_zoom.pcolor(px,py, mask_wrapped.data[0:sicn_wrapped.shape[0],:], cmap=cmap)
-
 # draw grid lines
-m_zoom.drawmeridians(np.arange(np.min(lons_mask),np.max(lons_mask)+0.75,0.75)) # last value is exclusive so have to add 0.75
-m_zoom.drawparallels(np.arange(-90,90.75,0.75))
+m_zoom.drawmeridians(np.arange(np.min(lons_mask),np.max(lons_mask)+0.75,0.75), color='k') # last value is exclusive so have to add 0.75
+m_zoom.drawparallels(np.arange(-90, 90.75,0.75), color='k')
 
 # set axes limits for plotting so that the map is zoomed in
 ax = plt.gca()
@@ -211,7 +226,7 @@ ax = plt.gca()
 ax.set_xlim([xmin,xmax])
 ax.set_ylim([ymin,ymax])
 
-plt.savefig('/home/rrolph/erosion_model_output_figures_too_large_for_github/study_sites/grid_mamontovy_khayata' + '.png', bbox_inches='tight', dpi=300)
+plt.savefig(plot_basepath + 'study_sites/grid_drew_point' + '.png', bbox_inches='tight', dpi=300)
 plt.show()
 
 
