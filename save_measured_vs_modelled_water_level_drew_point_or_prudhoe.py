@@ -23,13 +23,10 @@ from datetime import datetime
 from scipy.optimize import curve_fit
 
 ## specify paths
-basepath = '/home/rrolph/erosion_model/'
-plot_path = '/home/rrolph/erosion_model_output_figures_too_large_for_github/'
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 
-bathymetry_ifile = basepath + 'input_data/storm_surge/Drew_Point/depthHR_drewPoint.npy' # specify bathymetry file to be used in the storm surge module.  Drew Point bathy file produced in script called 'bathymetry_produced_for_drew_point.py'
-# filename of tide gauge data relative to MSL
+bathymetry_ifile = basepath + 'input_data/storm_surge/Drew_Point/depthHR_drewPoint.npy'
 
-## input lat/lon
 '''Barrow met station
 lat_site = 71.3230 # [degrees North]
 lon_site = -156.6114 # [degrees West]
@@ -41,18 +38,19 @@ lat_site = 70.402 # [degrees North]
 lon_site = -148.519 # [degrees West]
 community_name = 'prudhoe_bay'
 '''
+#community_name = 'Drew_Point'
+community_name = 'prudhoe_bay'
 
-# Drew Point offshore site 
-#lat_site = 70.88 # [degrees North]
-#lon_site = -153.92 # [degrees West]
-lat_site = np.load('/home/rrolph/erosion_model/input_data/storm_surge/Drew_Point/lat_offshore_site_ERAI_Drew_Point.npy')
-lon_site = np.load('/home/rrolph/erosion_model/input_data/storm_surge/Drew_Point/lon_offshore_site_ERAI_Drew_Point.npy')
-community_name = 'Drew_Point'
+if community_name == 'Drew_Point':
+	# Drew Point offshore site
+	#lat_site = 70.88 # [degrees North]
+	#lon_site = -153.92 # [degrees West]
+	lat_site = np.load(basepath + 'input_data/storm_surge/Drew_Point/lat_offshore_site_ERAI_Drew_Point.npy') # produced by generate_grid_maps_and_choose_forcing_grid_cells_drew_point.py
+	lon_site = np.load(basepath + 'input_data/storm_surge/Drew_Point/lon_offshore_site_ERAI_Drew_Point.npy')
 
-# choose an offshore grid cell where the sicn, winds, SST will be taken from.. this is visulalized on a map and produced from make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
-#community_name = 'Drew_Point' # community name here also refers to the offshore point
-#lat_site = np.load(npy_path + 'lat_offshore_site_ERAI_drew_point.npy')
-#lon_site = np.load(npy_path + 'lon_offshore_site_ERAI_drew_point.npy')
+if community_name == 'prudhoe_bay':
+	lat_site = 70.402
+	lon_site = -148.519
 
 npy_path = basepath + 'input_data/storm_surge/'+ community_name + '/'
 
@@ -96,7 +94,7 @@ for year in np.arange(2007,2008):
 	water_level_meters_erai.to_pickle(npy_path + 'ERAI_forced_water_levels/ERAI_forced_WL_' + str(year) + '.pkl')
 
 	print('lat_site_ERAI: ' + str(lat_site_ERAI))
-	print('lon_site_ERAI: ' + str(lon_site_ERAI)) # this should be the same as the saved arrays in /home/rrolph/erosion_model/input_data/storm_surge/Drew_Point/lat_offshore*, which were produced by make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
+	print('lon_site_ERAI: ' + str(lon_site_ERAI)) # this should be the same as the saved arrays in offshore grid cells lat lon (lat_offshore_site_*npy) produced by generate_grid_maps_and_choose_forcing_grid_cells_drew_point.py.
 
 
 

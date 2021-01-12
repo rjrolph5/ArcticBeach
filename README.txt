@@ -31,12 +31,12 @@ was taken from
 [x + ran it with updated arcticbeach paths]- Drew Point:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
 
 ## Generate and/or load a bathymetry file for use in the storm surge model.
-[  ]- bathymetry_produce_for_drew_point_and_bykovsky.py
+[x + ran it with updated arcticbeach paths]- bathymetry_produce_for_drew_point_and_bykovsky.py
 
 ## Calculate the unmasked water levels at the offshore grid cell you selected from the plotting script above.
 ## Both of these scripts below call storm_surge_ERA_Interim.py, which is the storm surge model.
-[  ]- Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
-[  ]- Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
+[storm_surge_ERA_inerim is done + paths;  x + paths and data copied , data checks out it is the same using the new paths... ]- Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
+[x + new paths and data copied.]- Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
 
 ## Create and apply a mask at timesteps when sea ice concentration is greater than 15%. Save the masked
 ## arrays that will be fed into the erosion model.
@@ -49,7 +49,3 @@ was taken from
 
 ## For model tuning and validation of retreat rates, create a file of observed retreat rates.
 [  ]- save_observed_retreat_rates.py
-
-## Read tide gauge data...
-
-

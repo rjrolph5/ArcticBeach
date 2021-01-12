@@ -2,19 +2,23 @@
 """
 Created on Tue Jun 16 13:58:04 2020
 
-Produce the bathymetry for Drew Point , used in the storm surge module. 
+Produce bathymetry NumPy arrays for use in the bathystrophic storm surge model.
 
-@author: rrolph
+rebecca.rolph@awi.de
 """
-
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# increase resolution of bathymetry. commented out after loop is run and depthHR is saved to a file which is loaded at the top of the script. 
+# set basepath
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/' # where txt or csv of bathymetry information is saved.
+# set path to save npy bathymetry output file.
+ofilepath = basepath + 'input_data/storm_surge/'
 
-bathyfile = '/home/rrolph/erosion_model/depth.txt'
+# Interpolate bathymetry to a higher resolution. Commented out after loop is run and depthHR is saved to a npy file.
+
+bathyfile = basepath + 'depth_drew_point_from_Ravens_2012.txt'
 
 depth = pd.read_csv(bathyfile,header=None)
 depthHR =  np.zeros(126)
@@ -33,16 +37,16 @@ for i in np.arange(0,depth.shape[0]-1):
 
 depthHR = depthHR[:-1]
 # save 
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Drew_Point/depthHR_drewPoint.npy',depthHR)
+np.save(ofilepath + 'Drew_Point/depthHR_drewPoint.npy',depthHR)
 
-# bykovsky
+# Mamontov Khayata
 depth_bykovsky = np.zeros(127)
 for i in np.arange(1,depth_bykovsky.shape[0]-1):
 	depth_bykovsky[i-1] = 80/126 * i
 
 depth_bykovsky = np.flip(depth_bykovsky[:-2])
 
-np.save('/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/depth_bykovsky.npy',depth_bykovsky)
+np.save(ofilepath + 'Mamontovy_Khayata/depth_bykovsky.npy',depth_bykovsky)
 
 # the numpy file needs to be saved from offshore inwards, so the greatest depth has index 0.  
 # however, for plotting purposes, we will reverse this so index 0 is the beach depth. 
