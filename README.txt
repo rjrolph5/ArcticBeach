@@ -5,12 +5,12 @@ Code for Rolph et al., 'Towards A physics-based parameterization of pan-Arctic e
 
 ##  /permarisk/output/becca_erosion_model/pls11_erosion_model_scripts
 
-#[x]    #### Set up initial model parameters
+#[need to change paths to ArcticBeach but finished commenting and cleaning...]    #### Set up initial model parameters
 Use global_variables_for_batch.py to specify study site, cliff and beach parameters (with the option of a
 uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants,
 as well as paths for input/output.
 
-# [x] #### Run the water offset solver and calculate the retreat rates
+#[need to change paths to ArcticBeach but finished commenting and cleaning...]   #### Run the water offset solver and calculate the retreat rates
 batch_monte_carlo.sh is the slurm batch script used to run the water_level_solver_for_batch.py, described below.
 
 water_level_solver_for_batch.py simulataneously calculates the required water level offset as described in
@@ -19,7 +19,7 @@ offset, it calls the rbeach_for_batch.py, which is the main erosion model.
 
 ##  Preparing forcing data (these scripts are in /home/rrolph/erosion_model/
 
-[x, dont need to copy or change any paths in this script bc era-i is freely available]-- ERA_interim_read_with_wave_and_sst.py:
+- ERA_interim_read_with_wave_and_sst.py:
         - Reads the ERA-Interim reanalysis data
         - Calculates the vector averaged wind speed and directions
         - Averages the forcing to 3 hourly means if not supplied in that time resolution already.
@@ -27,25 +27,25 @@ offset, it calls the rbeach_for_batch.py, which is the main erosion model.
 was taken from
 
 ## Use the plotting scripts to identify the offshore grid cell for each community
-[x + ran it with updated ArcticBeach paths]- Mamontovy Khayata:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_bykovsky_mamontovy_khayata.py
-[x + ran it with updated arcticbeach paths]- Drew Point:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
+- Mamontovy Khayata:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_bykovsky_mamontovy_khayata.py
+- Drew Point:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
 
 ## Generate and/or load a bathymetry file for use in the storm surge model.
-[x + ran it with updated arcticbeach paths]- bathymetry_produce_for_drew_point_and_bykovsky.py
+- bathymetry_produce_for_drew_point_and_bykovsky.py
 
 ## Calculate the unmasked water levels at the offshore grid cell you selected from the plotting script above.
 ## Both of these scripts below call storm_surge_ERA_Interim.py, which is the storm surge model.
-[storm_surge_ERA_inerim is done + paths;  x + paths and data copied , data checks out it is the same using the new paths... ]- Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
-[x + new paths and data copied.]- Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
+- Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
+- Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
 
 ## Create and apply a mask at timesteps when sea ice concentration is greater than 15%. Save the masked
 ## arrays that will be fed into the erosion model.
-[  ]- make_mask_based_on_seaice_threshold_ERAI_input_community.py
+- make_mask_based_on_seaice_threshold_ERAI_input_community.py
 
 ## Interpolate into hourly timesteps to use for input into the model
-[  ]- interpolate_masked_ERAIdata.py
+- interpolate_masked_ERAIdata.py
 
 ##### Validation data #############
 
 ## For model tuning and validation of retreat rates, create a file of observed retreat rates.
-[  ]- save_observed_retreat_rates.py
+- save_observed_retreat_rates.py

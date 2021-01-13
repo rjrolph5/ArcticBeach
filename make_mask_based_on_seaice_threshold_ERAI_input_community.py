@@ -1,9 +1,7 @@
 
-# create a mask to apply to water levels based on sea ice concentration threshold of an close-to-shore grid cell.
+# Create a mask to apply to water levels based on sea ice concentration threshold of a close-to-shore grid cell.
 
-# save the masked water level in yearly files.
-
-# option to include a timesubet of a year
+# Save the masked water level in yearly files.
 
 import numpy as np
 from netCDF4 import Dataset
@@ -18,35 +16,40 @@ import matplotlib.patches as mpatches
 from mpl_toolkits.basemap import Basemap, addcyclic
 import ERA_interim_read_with_wave_and_sst
 
-#community_name = 'Mamontovy_Khayata'
-#community_name = 'prudhoe_bay'
-community_name = 'Drew_Point'
+study_site = 'Mamontovy_Khayata'
+#study_site = 'prudhoe_bay'
+#study_site = 'Drew_Point'
 
-print(community_name)
+print(study_site)
 
-# put the lat lon of the ERAI cell offshore where the seaice data is taken from to create the mask applied to the water levels in this script. 
-# should be the same as the script in plot_and_save_measured_vs_modelled_water_level_*
+##### path names
 
-if community_name == 'prudhoe_bay':  ## this should be the same lat and lon as in the plot_and_save_measured_vs_modelled_water_level_drew_point.py
-	npy_path = '/home/rrolph/erosion_model/input_data/storm_surge/prudhoe_bay/'
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
+
+# put where your ERA-Interim data is stored here.
+ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/'
+
+
+# Put the lat lon of the ERAI cell offshore, used to create the mask applied to the water levels in this script.
+
+if study_site == 'prudhoe_bay':
+	npy_path = basepath + 'input_data/storm_surge/prudhoe_bay/'
 	lat_site = 70.402
 	lon_site = -148.519
 	year_range = np.arange(2007,2017) # up to (not including) year end
 
-if community_name == 'Drew_Point':  ## this should be the same lat and lon as in the plot_and_save_measured_vs_modelled_water_level_drew_point.py
-	npy_path = '/home/rrolph/erosion_model/input_data/storm_surge/Drew_Point/'
+if study_site == 'Drew_Point':
+	npy_path = basepath + 'input_data/storm_surge/Drew_Point/'
 	lat_site = np.load(npy_path + 'lat_offshore_site_ERAI_Drew_Point.npy')
 	lon_site = np.load(npy_path + 'lon_offshore_site_ERAI_Drew_Point.npy')
-	#lat_site = 71.25 # [degrees North] 70.75, -154 is Drew Point, but the inputs shoudl be the site offshore
-	#lon_site = -153.75 # [degrees West]
+	#year_range = np.arange(2007,2008) # up to (not including) year end
 	year_range = np.arange(2007,2017) # up to (not including) year end
-	#year_range = np.arange(2016,2017)
 
-if community_name == 'Mamontovy_Khayata':  ## this should be the same lat and lon as in the plot_and_save_measured_vs_modelled_water_level_bykovsky.py
-	npy_path = '/home/rrolph/erosion_model/input_data/storm_surge/Mamontovy_Khayata/'
+if study_site == 'Mamontovy_Khayata':
+	npy_path = basepath + 'input_data/storm_surge/Mamontovy_Khayata/'
 	lat_site = np.load(npy_path + 'lat_offshore_site_ERAI_mamontovy_hayata.npy') # [degrees North] this is the point offshore
 	lon_site = np.load(npy_path + 'lon_offshore_site_ERAI_mamontovy_hayata.npy')
-	#year_range = np.arange(2016,2017)
+	#year_range = np.arange(1995,1996) # up to year end
 	year_range = np.arange(1995,2019) # up to year end
 
 def geo_idx(dd, dd_array):
@@ -63,12 +66,9 @@ for year in year_range:
 	start_date = str(year) + '-01-01'  # make month padded with preceding zero (e.g. july is 07 and not 7) , same with daynumber e.g. 2007-07-01 is july 1st).
 	end_date = str(year) + '-12-31'
 
-	## start def 
+	# start def
 	start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
 	end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
-
-	# databasepath
-	ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/' # for pls11
 
 	# sea ice concentration input file
 	sicn_ifile = ncfile_path + 'ci_with_mask/ERAintforcing_Arctic_ci_' + str(year) + '0101_' + str(year) + '1231_with_mask.nc'
@@ -95,10 +95,8 @@ for year in year_range:
 
 	# you have to match the timesteps of the unmasked water levels with the timesteps of the era interim sicn, and then apply the mask.
 
-	# calculated water levels forced by ERA-I data , produced from plot_and_save_measured_vs_modelled_water_level_bykovsky.py
-	basepath = '/home/rrolph/erosion_model/'
 	# water levels calculated use the ERAI winds from the same offshore lat/lon
-	npy_path = basepath + 'input_data/storm_surge/'+ community_name +'/'
+	npy_path = basepath + 'input_data/storm_surge/'+ study_site +'/'
 	unmasked_water_levels = pd.read_pickle(npy_path + 'ERAI_forced_water_levels/ERAI_forced_WL_' + str(year) + '.pkl')
 
 	# find indices in sicn that match the first and last datetimes of the calcd water level file
@@ -110,7 +108,7 @@ for year in year_range:
 
 	sicn_offshore_timesubset = sicn_offshore_all_timesteps[first_wl_datetime_ind:last_wl_datetime_ind+1] # +1 bc not inclusive
 
-	##### create bool mask where average sicn in that domain crosses a user-input threshold
+	# create bool mask where average sicn in that domain crosses a user-input threshold
 
 	sicn_threshold = 0.15 # era-interim gives fraction as a unit, not percent, of sea ice cover per grid cell.
 
@@ -124,7 +122,7 @@ for year in year_range:
 	# make the bool value of 1 for timesteps of open water (e.g. below sicn threshold) for this year (current ncfile) and this will be your mask
 	mask_for_wl[timesteps_bt] = 1
 
-	###### apply mask to calcd water levels in the npy path and resave it to use for a now seasonal forcing of the erosion model.
+	# apply mask to calcd water levels in the npy path and resave it to use for a now seasonal forcing of the erosion model.
 	# check that mask to be applied to dataset is the same shape as the dataset
 	'''
 	>>> mask_for_wl.shape
@@ -137,7 +135,7 @@ for year in year_range:
 	water_levels_masked = mask_for_wl*unmasked_water_levels
 
 	# save the new water levels you will use to force the erosion model
-	water_levels_masked.to_pickle(npy_path + 'ERAI_forced_water_levels_masked/water_levels_' + community_name + '_masked_' + str(year) + '.pkl')
+	water_levels_masked.to_pickle(npy_path + 'ERAI_forced_water_levels_masked/water_levels_' + study_site + '_masked_' + str(year) + '.pkl')
 
 	# load the dataframe of the other variables and mask where sicn is above the threshold.
 	df, lat_site_ERAI, lon_site_ERAI = ERA_interim_read_with_wave_and_sst.read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime)
@@ -152,7 +150,7 @@ for year in year_range:
 	df_masked['sicn'] = sicn_offshore_timesubset
 
 	# save the dataframe by year
-	df_masked.to_pickle(npy_path + 'ERAI_forcing_variables_masked/ERAI_forcings_' + community_name + '_masked_' + str(year) + '.pkl')
+	df_masked.to_pickle(npy_path + 'ERAI_forcing_variables_masked/ERAI_forcings_' + study_site + '_masked_' + str(year) + '.pkl')
 
 
 

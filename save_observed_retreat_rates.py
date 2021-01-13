@@ -1,7 +1,6 @@
 import numpy as np
 
-
-basepath = '/home/rrolph/erosion_model/input_data/'
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 
 
 ## Bykovsky-- Mamontovy_Khayata
