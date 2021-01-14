@@ -3,21 +3,21 @@
 Code for Rolph et al., 'Towards A physics-based parameterization of pan-Arctic erosion'
 
 
-##  /permarisk/output/becca_erosion_model/pls11_erosion_model_scripts
 
-#[need to change paths to ArcticBeach but finished commenting and cleaning...]    #### Set up initial model parameters
+#### Set up initial model parameters
 Use global_variables_for_batch.py to specify study site, cliff and beach parameters (with the option of a
 uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants,
 as well as paths for input/output.
 
-#[need to change paths to ArcticBeach but finished commenting and cleaning...]   #### Run the water offset solver and calculate the retreat rates
-batch_monte_carlo.sh is the slurm batch script used to run the water_level_solver_for_batch.py, described below.
+#### Run the water offset solver and calculate the retreat rates
+batch_monte_carlo.sh is the slurm batch script used to run the 
+water_level_solver_for_batch.py, described below.
 
 water_level_solver_for_batch.py simulataneously calculates the required water level offset as described in
 the paper, and then uses this offset to simulate the retreat rates.  Once it calculates the water level
 offset, it calls the rbeach_for_batch.py, which is the main erosion model.
 
-##  Preparing forcing data (these scripts are in /home/rrolph/erosion_model/
+##  Preparing forcing data
 
 - ERA_interim_read_with_wave_and_sst.py:
         - Reads the ERA-Interim reanalysis data

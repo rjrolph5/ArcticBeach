@@ -6,12 +6,12 @@ import os, shutil
 # Use this script, global_variables_for_batch.py, to specify study site, cliff and beach parameters (with the option of a uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants, 
 # as well as paths for input/output.
 
-community_name = 'Mamontovy_Khayata'
-#community_name = 'Drew_Point'
+#community_name = 'Mamontovy_Khayata'
+community_name = 'Drew_Point'
 
 # Initialize year, updated in the water_level_solver.py module
 if community_name == 'Mamontovy_Khayata':
-	year=1995 # the start obs year for retreat rates for Mamontovy_Khayata is 1995
+	year=1995 # the starting observed year for retreat rates for Mamontovy_Khayata is 1995
 
 if community_name == 'Drew_Point':
 	year=2007 # initial year retreat rate obs exist that you will use.
@@ -23,17 +23,12 @@ end_month = 'Dec'
 end_day = '31'
 
 ## Basepaths (Change these based on your system set-up)
-basepath_home = '/home/rrolph/erosion_model/' # a local folder
-basepath = '/permarisk/output/becca_erosion_model/'  # a path that can hold larger output files and forcing data
-plot_basepath = basepath + 'output_plots/'  # local or remote folder
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 
-# paths that use basepaths above
-plot_path = plot_basepath + 'cbeach_output_parameters/' + community_name + '/' + start_month + start_day + '_thru_' + end_month + end_day + '_' + str(year) + '/'
-# if path does not exist, create it:
-#Path(datapath_io).mkdir(parents=True, exist_ok=True)
-npy_path = basepath_home + 'input_data/storm_surge/' + community_name + '/'
+### paths that use basepaths above
+npy_path = basepath + 'input_data/storm_surge/' + community_name + '/'
 
-# Indicate the name of the experiment.  This name is also used to define the output pathname.
+# Indicate the name of the experiment.  This name is also used to define the output pathname. UNCOMMENT the parameters below. these could be replaced with if statements.
 parameters_tested_name = 'cliff_thaw_depth' # e.g. full_uncertainty , cliff_height_change, beach_thaw_depth_change, cliff_ice_content_change, cliff_angle_change are examples.
 
 # Create a path to save this script, which has global variables defined, that has the parameters_tested_name

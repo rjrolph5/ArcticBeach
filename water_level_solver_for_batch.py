@@ -1,6 +1,6 @@
 # This script uses a solver to find a numerical solution for the tuning parameter called 'water_level_offset', in order to match (within tolerance) of the observed retreat rate. This is a calibration script.  It also has the 
 # user-defined option to set the tuning parameter to the median of the annually-calculated values, and then run the erosion model using that median value.  This approach will produce a timeseries of retreat rates. Note: You must 
-# update global_variables.py before running this script to the study site and parameters you would like to evaulate retreat rates for.
+# update global_variables_for_batch.py before running this script to the study site and parameters you would like to evaulate retreat rates for.
 
 import sys
 import global_variables_for_batch as global_variables
@@ -31,7 +31,8 @@ if global_variables.community_name == 'Mamontovy_Khayata':
 
 ##### This indicates if you would like to run the erosion model using the median of the cailibrated water level offsets. This corresponds to the default water level offset values used for the default run when comparing Monte 
 ##### Carlo sensitivity tests.
-wl_all = np.array([1]) if use_median_water_level_offset == 'True':
+wl_all = np.array([1])
+if use_median_water_level_offset == 'True':
 	# find median water level
 	for yr in np.arange(year_init_for_median, year_final_for_median):
 		# specify the paths the calculated water level offset should be saved in,  directory by experiment, filename by year.
@@ -49,8 +50,8 @@ initial_guess_for_water_level_offset = 0.2
 
 ##### Load the observed retreat rates for the given community
 # These numpy files of observed retreat rates are generated from save_observed_retreat_rates.py
-observed_retreat_years = np.load('/home/rrolph/erosion_model/input_data/observed_retreat_years_' + global_variables.community_name + '.npy')
-retreat_observed = np.load('/home/rrolph/erosion_model/input_data/observed_retreat_rates_allyears_' + global_variables.community_name + '.npy')
+observed_retreat_years = np.load(global_variables.basepath + 'input_data/observed_retreat_years_' + global_variables.community_name + '.npy')
+retreat_observed = np.load(global_variables.basepath + 'input_data/observed_retreat_rates_allyears_' + global_variables.community_name + '.npy')
 
 def read_observed_erosion_rates(year):
 	#global observed_retreat_years
@@ -138,7 +139,7 @@ ax.set_xticks(x)
 ax.tick_params('x',rotation=90,pad=1)
 plt.legend()
 
-plt.savefig('/home/rrolph/erosion_model_output_figures_too_large_for_github/modelled_vs_observed_retreat_using_median_reqrd_wl' + str(global_variables.community_name) + '.png', bbox_inches = 'tight')
+plt.savefig(plot_path)
 plt.show()
 '''
 

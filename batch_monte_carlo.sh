@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # water_level_solver.sbatch #
-#SBATCH -D /permarisk/output/becca_erosion_model/pls11_erosion_model_scripts/ # Working directory that contains the water_level_solver function.
+#SBATCH -D /permarisk/output/becca_erosion_model/ArcticBeach/ # Working directory that contains the water_level_solver function.
 #SBATCH -J becca_monte_carlo_retreat_rates # A single job name for the array
 #SBATCH -p PermaRisk # best partition for single core small jobs 
 #SBATCH -n 1 # one core

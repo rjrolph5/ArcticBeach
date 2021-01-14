@@ -1,0 +1,91 @@
+from pathlib import Path
+import pandas as pd
+import numpy as np
+
+community_name = 'Mamontovy_Khayata'
+#community_name = 'Drew_Point'
+
+# initialize year, updated in the water_level_solver.py module
+if community_name == 'Mamontovy_Khayata':
+	year=1995 # the start obs year for retreat rates for Mamontovy_Khayata is 1995
+
+if community_name == 'Drew_Point':
+	year=2007 # initial year retreat rate obs exist that you will use.
+
+
+experiment_name = 'avg'
+
+# set classes of input variables for easier readability. see rbeach.py for input variable description.
+class cliff_parameters:
+	def __init__(self, Hc, thc, Bc, Pc, vc, nic, ksc):
+		self.Hc = Hc
+		self.thc = thc
+		self.Bc = Bc
+		self.Pc = Pc
+		self.vc = vc
+		self.nic = nic
+		self.ksc = ksc
+
+class beach_parameters:
+	def __init__(self, Wb, thb, Bb, Pb, vb, ksb):
+		self.Wb = Wb
+		self.thb = thb
+		self.Bb = Bb
+		self.Pb = Pb
+		self.vb = vb
+		self.ksb = ksb
+
+# change some cliff and beach parameters based on community name
+if community_name == 'Mamontovy_Khayata':
+	# Specify cliff, beach, and water parameter values.
+	#                              (Hc, thc, Bc,  Pc,   vc, nic,  ksc)
+	cliff_params = cliff_parameters(10, 60, 0.2, 0.1, 0.43, 0.8, 0.002)
+	#			       (Wb,    thb,   Bb,   Pb,  vb, ksb)
+	beach_params = beach_parameters(0.01, 0.06,   1,   0.6, 0.6, 0.002)
+
+if community_name == 'Drew_Point':
+	# Specify cliff, beach, and water parameter values.
+	#                              (Hc, thc, Bc,  Pc,   vc, nic,  ksc)
+	cliff_params = cliff_parameters(3, 60, 0.2, 0.1, 0.43, 0.8, 0.002) # changed Bc from 0.1 to 1 (unfrozen cliff sediment thickness). but the coarse fraction of unforzen cliff sed (Pc) is 0.1 like how it currently is in the figures.
+	#			       (Wb,    thb,   Bb,   Pb,  vb, ksb)
+	beach_params = beach_parameters(0.01, 0.06,   1,   0.6, 0.6, 0.002)
+
+## you call the cliff params in the other script by e.g.:
+#import global_variables
+#Hc = global_variables.cliff_params.Hc
+
+###### define other global variables that are not changed as often by user-input as the ones above in the classes
+forcing_for_storm_surge_model = 'ERAI'
+hourly_resolution_of_water_level_forcing = 1 # This value should not be changed from 1.  This is here to better indicate the model is set up that the input data needs to be interpolated to 1 hourly.
+start_month = 'Jan'
+start_day='1'
+end_month = 'Dec'
+end_day = '31'
+
+
+# Profile empirical parameters, where A is more established as 0.1, but calibrated together with alpha. Determines the rate of potential cross-shore sediment transport.
+A = 0.1 # empirical parameter for equilibrium beach profile
+alpha = 0.001 # alpha = empirical parameter for sediment transport rate parameter (decreasing alpha decreases potential sediment transport supplied by beach to ocean)
+adjust = 0.1 # heat adjustment parameter (given in Kob. '99)
+
+Sw = 15.0 # seawater salinity
+gammab = 0.4 # empirical breaking parameter
+beta = 1.0 # wave runup parameter (1.0) given in Kobayashi et al. (1999) for a storm !!! this might need to be adjusted using an empirical formula with wave height as an input for example.
+
+## paths
+basepath = '/home/rrolph/erosion_model/'
+plot_basepath = '/home/rrolph/erosion_model_output_figures_too_large_for_github/'
+plot_path = plot_basepath + 'cbeach_output_parameters/' + community_name + '/' + start_month + start_day + '_thru_' + end_month + end_day + '_' + str(year) + '/'
+datapath_io = basepath + 'data_io/' + community_name + '/' + start_month + start_day + '_thru_' + end_month + end_day + '_' + str(year) + '/' + experiment_name +'/'
+# if path does not exist, create it:
+Path(datapath_io).mkdir(parents=True, exist_ok=True)
+npy_path = basepath + 'input_data/storm_surge/' + community_name + '/'
+
+## load in the masked arrays (based on sea ice concentration threshold), interpolted to hourly
+water_level_meters = pd.read_pickle(npy_path + 'ERAI_forced_water_levels_masked/hourly/water_levels_' + community_name + '_masked_' + str(year) + '_hourly.pkl')
+
+## load the wave height and period, sst. Interpolated to hourly
+df_hourly = pd.read_pickle(npy_path + 'ERAI_forcing_variables_masked/hourly/ERAI_forcings_' + community_name + '_masked_' + str(year) + '_hourly.pkl')
+Hrms = df_hourly.swh_site
+Tr = df_hourly.wave_period_site
+Tw = df_hourly.sst_site - 273.15 # convert K to deg C

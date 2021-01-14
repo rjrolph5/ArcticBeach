@@ -16,7 +16,8 @@ import datetime
 import global_variables_for_batch as global_variables
 
 
-'''
+''' Definitions of model parameters and forcing variables
+
 # Beach 
 Wb = initial beach width
 tanthb = initial beach slope
@@ -28,6 +29,7 @@ nib = ice voulme per unit volume of the frozen beach sediment
 rhoi = density of bubble-free pure ice = 920 [kg/m^3]
 Li = latent heat of melting = 3.3e5 [J/kg]
 Lb = nib*rhoi*Li = volumetric latent heat of melting per unit volume of the frozen beach sediment [J/m^3]
+
 # Cliff
 Hc = cliff height above MSL
 thetac = seaward cliff slope angle in degrees as input
@@ -37,6 +39,7 @@ vc = coarse sediment volume per unit volume of frozen cliff sediment
 nic = ice volume per unit volume of frozen cliff sediment
 Lc = volumetric latent heat of melting per unit volume of frozen cliff sediment [J/m^3]
 ksc = equivalent sand roughness of frozen cliff sediment melting surface where ksc = 2.5d50
+
 # Seawater
 Tw = ocean temperature
 Sw = seawater salinity < 35%
@@ -44,20 +47,24 @@ Tm = melting temperature [C] of ice
 Cw = volumetric heat capacity [J/m^3]
 v = kinematic viscosity
 Kw = thermal conductivity
+
 # Waves
 Hrms = incident rms wave height
 Tr = representative wave period [sec] during a storm
 wr = angular frequency
 gammab = emperical breaking parameter = 0.4
 beta = emperical runup parameter = 1.0
+
 # Sediment transport
 A = empirical parameter for equilibrium beach profile
 alpha = empirical parameter for sediment transport rate parameter
 # Heat transfer
 adjust = empirical adjustment for hw (heat transfer coefficient)
+
 # Storm surge
 STIME = storm duration [hours]
 SURGE = storm surge above the mean sea level (MSL)
+
 # Other parameters
 db = water depth at seaward boundary
 dr = representative water depth where friction factors are calculated in subroutine FWROOT (added)
@@ -70,14 +77,9 @@ def erosion_main(water_level_offset):
 
 	# call/rename the global variables for clarity
 	basepath = global_variables.basepath
-	plot_path = global_variables.plot_path
 	datapath_io = global_variables.datapath_io
 
-	# add the offset to the water level. this is a local variable even though it has the same name as the 
-	# global.
-
-	# changed this so it reads in the water_level_offset supplied to erosion_main, not a global 
-	# water_level_offset variable
+	# add the offset to the water level.
 	water_level_meters = global_variables.water_level_meters + water_level_offset
 
 	## call global variables
@@ -161,10 +163,7 @@ def erosion_main(water_level_offset):
 		F = FRICTION(X1, R)
 		#print(R)
 		if np.greater(F*FMID,0.0):
-			#print(F)
-			#print(FMID)
-			print('Root is not in this range')
-			#input('PRESS ENTER TO CONTINUE.')
+			print('F times FMID is pos.')
 		if np.less(F,0.0):
 			fws = X1
 			DX = X2 - X1
@@ -456,8 +455,8 @@ def erosion_main(water_level_offset):
 	df.to_csv(global_variables.path_parameters_tested_outputs_per_year+'sediment_released_from_thawing_beach_qmelt.csv')
 	'''
 	# load the observed retreat
-	observed_retreat_years = np.load('/home/rrolph/erosion_model/input_data/observed_retreat_years_' + global_variables.community_name + '.npy')
-	retreat_observed = np.load('/home/rrolph/erosion_model/input_data/observed_retreat_rates_allyears_' + global_variables.community_name + '.npy')
+	observed_retreat_years = np.load(basepath + 'input_data/observed_retreat_years_' + global_variables.community_name + '.npy')
+	retreat_observed = np.load(basepath + 'input_data/observed_retreat_rates_allyears_' + global_variables.community_name + '.npy')
 	retreat_observed_year_selected = retreat_observed[int(np.where(observed_retreat_years==year)[0])]
 
 	return R - retreat_observed_year_selected
