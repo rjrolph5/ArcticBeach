@@ -103,45 +103,44 @@ for year in np.arange(year_init, year_final):
 
 R_all_modelled = R_all_modelled[1:]
 
-task_id = sys.argv[1] # argv[1:]  # this corresponds to run number of monte carlo iteration. 
+if global_variables.experiment_name != 'avg_initial_run_number/':
+	task_id = sys.argv[1] # argv[1:]  # this corresponds to run number of monte carlo iteration. 
+	global_variables.experiment_name = str(task_id) # this is a STRING of of the run number from the batch script and subsequently passed to this script.
 
-global_variables.experiment_name = str(task_id) # this is a STRING of of the run number from the batch script and subsequently passed to this script.
+	# update the datapath with the iteration experiment name
+	global_variables.datapath_io = global_variables.path_parameters_tested
 
-# update the datapath with the iteration experiment name
-global_variables.datapath_io = global_variables.path_parameters_tested
-
-##### save the modelled retreat rate array
-# make the directory if it does not exist.
-#Path(global_variables.datapath_io).mkdir(parents=True, exist_ok=True)
-np.save(global_variables.path_parameters_tested + '/R_all_modelled_' + global_variables.experiment_name + '.npy', R_all_modelled)
-
-
-'''
-# plot the observed vs modelled retreat rates.
+	##### save the modelled retreat rate array
+	# make the directory if it does not exist.
+	#Path(global_variables.datapath_io).mkdir(parents=True, exist_ok=True)
+	np.save(global_variables.path_parameters_tested + '/R_all_modelled_' + global_variables.experiment_name + '.npy', R_all_modelled)
 
 
-import matplotlib.pyplot as plt
+if global_variables.experiment_name == 'avg_initial_run_number/':
+	# save the R_all_modelled_using_median_calcd_water_level_[site_name].py
+	np.save(global_variables.basepath + 'R_all_modelled_using_median_calcd_water_level_' + global_variables.community_name  + '.npy', R_all_modelled)
 
+	# plot the observed vs modelled retreat rates.
+	import matplotlib.pyplot as plt
 
-x = observed_retreat_years  # the label locations
+	x = observed_retreat_years  # the label locations
 
-fig, ax = plt.subplots()
-if use_median_water_level_offset == 'True':
-	plt.title('Cliff retreat using calculated median water level: ' + str(round(water_offset_required,2)) + 'm, ' + global_variables.community_name)
+	fig, ax = plt.subplots()
+	if use_median_water_level_offset == 'True':
+		plt.title('Cliff retreat using calculated median water level: ' + str(round(water_offset_required,2)) + 'm, ' + global_variables.community_name)
 
-width = 0.35
+	width = 0.35
 
-ax.bar(observed_retreat_years - width/2 ,R_all_modelled, width, label = 'Modelled retreat')
-ax.bar(observed_retreat_years+ width/2, retreat_observed, width, label = 'Observed retreat')
+	ax.bar(observed_retreat_years - width/2 ,R_all_modelled, width, label = 'Modelled retreat')
+	ax.bar(observed_retreat_years+ width/2, retreat_observed, width, label = 'Observed retreat')
 
-ax.set_ylabel('Retreat [m]')
-ax.set_xticks(x)
-ax.tick_params('x',rotation=90,pad=1)
-plt.legend()
+	ax.set_ylabel('Retreat [m]')
+	ax.set_xticks(x)
+	ax.tick_params('x',rotation=90,pad=1)
+	plt.legend()
 
-plt.savefig(plot_path)
-plt.show()
-'''
+	#plt.savefig(global_variables.basepath + 'plots/observed_vs_calculated_retreat_' + global_variables.community_name + '.png', bbox_inches = 'tight')
+	plt.show()
 
 
 

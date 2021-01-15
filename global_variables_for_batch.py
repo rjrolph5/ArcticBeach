@@ -6,8 +6,8 @@ import os, shutil
 # Use this script, global_variables_for_batch.py, to specify study site, cliff and beach parameters (with the option of a uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants, 
 # as well as paths for input/output.
 
-#community_name = 'Mamontovy_Khayata'
-community_name = 'Drew_Point'
+community_name = 'Mamontovy_Khayata'
+#community_name = 'Drew_Point'
 
 # Initialize year, updated in the water_level_solver.py module
 if community_name == 'Mamontovy_Khayata':
@@ -29,7 +29,7 @@ basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 npy_path = basepath + 'input_data/storm_surge/' + community_name + '/'
 
 # Indicate the name of the experiment.  This name is also used to define the output pathname. UNCOMMENT the parameters below. these could be replaced with if statements.
-parameters_tested_name = 'cliff_thaw_depth' # e.g. full_uncertainty , cliff_height_change, beach_thaw_depth_change, cliff_ice_content_change, cliff_angle_change are examples.
+parameters_tested_name = 'avg' # e.g. full_uncertainty , cliff_height_change, beach_thaw_depth_change, cliff_ice_content_change, cliff_angle_change are examples.
 
 # Create a path to save this script, which has global variables defined, that has the parameters_tested_name
 path_parameters_tested = basepath + 'data_io/' + community_name + '/' + parameters_tested_name + '/'

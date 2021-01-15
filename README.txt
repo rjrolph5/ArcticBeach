@@ -2,8 +2,6 @@
 
 Code for Rolph et al., 'Towards A physics-based parameterization of pan-Arctic erosion'
 
-
-
 #### Set up initial model parameters
 Use global_variables_for_batch.py to specify study site, cliff and beach parameters (with the option of a
 uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants,
