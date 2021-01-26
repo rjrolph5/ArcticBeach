@@ -10,6 +10,7 @@ Hourly values relative to null
 """
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rcParams['axes.xmargin'] = 0 # removes whitespace around data in plots.
 import matplotlib.dates as mdates
 import numpy as np
 from datetime import datetime, timedelta
@@ -82,8 +83,10 @@ df_3hourly_mean_obs_subset = df_3hourly_mean_obs.loc[start_date:end_date]
 # load the modelled water level (masked)
 water_level_meters_erai = pd.read_pickle(npy_path + 'ERAI_forced_water_levels_masked/water_levels_Mamontovy_Khayata_masked_2007.pkl')
 
+
+
 ################  plot high-temporal observed vs modelled water levels.
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(5,4))
 plt.title('Tiksi water level data no offset \n July 31 2007 - Oct 31 2007')
 ax.plot(df_3hourly_mean_obs_subset.obs_water_level,label = '3h mean of 15 minute observations off Tiksi',color='b')
 # save the df 3hour mean of 15 min obs for tiksi
@@ -97,9 +100,13 @@ df_modelled_to_save = water_level_meters_erai[start_datetime:end_datetime]
 
 for label in ax.get_xticklabels():
     label.set_rotation(90)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%b'))
-plt.legend()
-plt.savefig(plot_path + 'modelled_vs_obs_water_level_no_offset_Tiksi2007.png', bbox_inches='tight')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%b-%y'))
+
+ax.tick_params(axis='both', which='major', labelsize=15)
+ax.legend(loc='upper left', prop={'size': 12})
+#ax.set_ylim(-1.1,1.8)
+fig.tight_layout()
+plt.savefig(plot_path + 'modelled_vs_obs_water_level_no_offset_Tiksi2007.png', bbox_inches='tight', dpi=300)
 plt.show()
 
 
@@ -110,12 +117,13 @@ mean_offset = np.nanmean(df_3hourly_mean_obs_subset.obs_water_level) - np.nanmea
 mean_offset_from_obs = np.nanmean(df_3hourly_mean_obs_subset.obs_water_level)
 
 
+
 ################ apply mean offset and plot comparison btwn obs and modelled again.
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(5,4))
 #plt.title('Observed and modelled water level using bykovsky bathy')
 ax.plot(df_3hourly_mean_obs_subset.obs_water_level - mean_offset_from_obs,label = 'Observed',color='b')
 ax.plot(water_level_meters_erai[start_datetime:end_datetime] + mean_offset - mean_offset_from_obs,label = 'Modelled',color='r')
-ax.set_ylabel('Water level [m]',fontsize=20, fontweight='bold')
+ax.set_ylabel('Water level [m]',fontsize=25) #fontweight='bold')
 
 # the number decides how many timesteps should be skipped before making a tickmark
 ax.xaxis.set_major_locator(ticker.MultipleLocator(4))
@@ -128,10 +136,12 @@ for n, label in enumerate(ax.xaxis.get_ticklabels()):
 
 for label in ax.get_xticklabels():
 	label.set_rotation(90)
-	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%b'))
+	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d-%b-%y'))
 
-plt.legend()
-plt.savefig(plot_path + 'modelled_vs_obs_water_level_offset_applied_Tiksi2007.png', bbox_inches='tight')
+ax.tick_params(axis='both', which='major', labelsize=15)
+ax.legend(loc='upper left', prop={'size': 12})
+fig.tight_layout()
+plt.savefig(plot_path + 'modelled_vs_obs_water_level_offset_applied_Tiksi2007.png', bbox_inches='tight',dpi=300)
 plt.show()
 
 #### plot a histogram for the 1 year that you have measured vs modelled water level data
@@ -144,14 +154,21 @@ water_level_meters_erai_dropped_nan = water_level_meters_erai[start_datetime:end
 water_level_meters_erai_dropped_nan = water_level_meters_erai_dropped_nan.dropna()
 
 # modelled
-fig, ax = plt.subplots()
-n_modelled, bins_modelled, patches_modelled = plt.hist(x=water_level_meters_erai_dropped_nan, density= True, bins='auto',color='r', alpha=0.7, rwidth=0.85, label = 'Modelled')
+fig, ax = plt.subplots(figsize=(5,4))
 n_modelled_gauge, bins_modelled_gauge, patches_modelled_gauge = plt.hist(x=df_obs_water_level_dropped_nan,density= True, bins='auto',color='b', alpha=0.7, rwidth=0.85, label = 'Observed')
-ax.legend()
-ax.set_ylabel('Frequency')
-ax.set_xlabel('Water depth [m]')
-ax.set_ylim(0,3)
-plt.savefig(plot_path + 'modelled_vs_measured_wl_tiksi_histogram_with_offset.png', bbox_inches = 'tight')
+n_modelled, bins_modelled, patches_modelled = plt.hist(x=water_level_meters_erai_dropped_nan, density= True, bins='auto',color='r', alpha=0.7, rwidth=0.85, label = 'Modelled')
+ax.legend(loc='upper left', prop={'size': 12})
+ax.set_ylabel('Frequency', fontsize=25) #fontweight='bold')
+ax.set_xlabel('Water level [m]', fontsize=25) # fontweight='bold')
+ax.set_ylim(0,3.2)
+ax.set_xlim(-1.01,1.7)
+
+props = dict(boxstyle='round', facecolor='wheat',alpha=0.5)
+ax.text(0.70,0.95,'MK (2007)', transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+
+ax.tick_params(axis='both', which='major', labelsize=15)
+fig.tight_layout()
+plt.savefig(plot_path + 'modelled_vs_measured_wl_tiksi_histogram_with_offset.png', bbox_inches = 'tight',dpi=300)
 plt.show()
 
 

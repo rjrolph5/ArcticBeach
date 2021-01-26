@@ -16,8 +16,8 @@ import matplotlib.patches as mpatches
 from mpl_toolkits.basemap import Basemap, addcyclic
 import ERA_interim_read_with_wave_and_sst
 
-study_site = 'Mamontovy_Khayata'
-#study_site = 'prudhoe_bay'
+#study_site = 'Mamontovy_Khayata'
+study_site = 'prudhoe_bay'
 #study_site = 'Drew_Point'
 
 print(study_site)
@@ -34,8 +34,9 @@ ncfile_path = '/permarisk/data/ERA_Data/ERAint_Arctic/'
 
 if study_site == 'prudhoe_bay':
 	npy_path = basepath + 'input_data/storm_surge/prudhoe_bay/'
-	lat_site = 70.402
+	lat_site = 70.402 # also can load the first two indices (but hardcoded here are the same lat/lon values) of input_array_to_produce_modelled_water_levels_prudhoe_bay_era.npy
 	lon_site = -148.519
+	#year_range = np.arange(2007,2008) # up to (not including) year end
 	year_range = np.arange(2007,2017) # up to (not including) year end
 
 if study_site == 'Drew_Point':

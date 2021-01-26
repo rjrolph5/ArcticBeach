@@ -39,7 +39,8 @@ lon_site = -148.519 # [degrees West]
 community_name = 'prudhoe_bay'
 '''
 #community_name = 'Drew_Point'
-community_name = 'prudhoe_bay'
+#community_name = 'prudhoe_bay'
+community_name = 'prudhoe_bay_era'
 
 if community_name == 'Drew_Point':
 	# Drew Point offshore site
@@ -48,7 +49,7 @@ if community_name == 'Drew_Point':
 	lat_site = np.load(basepath + 'input_data/storm_surge/Drew_Point/lat_offshore_site_ERAI_Drew_Point.npy') # produced by generate_grid_maps_and_choose_forcing_grid_cells_drew_point.py
 	lon_site = np.load(basepath + 'input_data/storm_surge/Drew_Point/lon_offshore_site_ERAI_Drew_Point.npy')
 
-if community_name == 'prudhoe_bay':
+if community_name == 'prudhoe_bay' or 'prudhoe_bay_era':
 	lat_site = 70.402
 	lon_site = -148.519
 
