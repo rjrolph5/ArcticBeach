@@ -15,6 +15,7 @@ import matplotlib.dates as mdates
 import numpy as np
 from datetime import datetime, timedelta
 import matplotlib.ticker as ticker
+import scipy.stats
 
 basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 
@@ -143,6 +144,32 @@ ax.legend(loc='upper left', prop={'size': 12})
 fig.tight_layout()
 plt.savefig(plot_path + 'modelled_vs_obs_water_level_offset_applied_Tiksi2007.png', bbox_inches='tight',dpi=300)
 plt.show()
+
+#### compute stats of obs vs modelled water levels:  range and pearson correlation coeff
+
+wl_obs = df_3hourly_mean_obs_subset.obs_water_level - mean_offset_from_obs
+wl_modelled = water_level_meters_erai[start_datetime:end_datetime] + mean_offset - mean_offset_from_obs
+
+# find range of modelled water level
+range_modelled_wl = np.nanmax(wl_modelled) - np.nanmin(wl_modelled)
+print('range of modelled water level: ' + str(range_modelled_wl))
+
+## find the range of the observed water level
+range_obs_wl = np.nanmax(wl_obs) - np.nanmin(wl_obs)
+print('range of observed water level: ' + str(range_obs_wl))
+
+## correlate the modelled and observed
+df_modelled_wl = pd.DataFrame(data=wl_modelled.values, index=wl_modelled.index)
+df_modelled_wl.columns = ['wl_modelled']
+df_measured_wl = pd.DataFrame(data=wl_obs.values, index=wl_obs.index)
+df_measured_wl.columns = ['wl_measured']
+
+df_merged = pd.merge(left=df_modelled_wl, left_index=True, right=df_measured_wl, right_index=True, how='inner')
+corr, p = scipy.stats.pearsonr(df_merged['wl_modelled'],df_merged['wl_measured'])
+print('corr: ' + str(corr) + 'p_value: ' + str(p))
+
+
+
 
 #### plot a histogram for the 1 year that you have measured vs modelled water level data
 

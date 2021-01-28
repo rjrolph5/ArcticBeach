@@ -34,7 +34,7 @@ npy_path = basepath + 'input_data/storm_surge/'+ community_name + '/'
 ## load the calculated water levels for 1 chosen example year
 modelled_water_levels_erai_sample_year = pd.read_pickle(npy_path + 'ERAI_forced_water_levels_masked/water_levels_'+ community_name + '_masked_' + str(year) + '.pkl')
 
-## load the tide gauge water levels for 1 example year only if Drew Point bc then there is a tide gauge available. The available tide gauge data is hourly (not interpolated).
+## load the tide gauge water levels for 1 example year 
 tide_gauge_wl_sample_year = pd.read_pickle(basepath + 'input_data/storm_surge/prudhoe_bay/tide_gauge_pkld_water_levels/water_level_meters_tidegauge' + str(year) + '.pkl')
 # find where modelled wl are nan, so you can apply it to tide gauge timesteps
 first_timestamp_open_water_model = modelled_water_levels_erai_sample_year.first_valid_index()
