@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 plot_path = basepath + 'plots/'
 
-#community_name = 'Mamontovy_Khayata'
-community_name = 'Drew_Point'
+community_name = 'Mamontovy_Khayata'
+#community_name = 'Drew_Point'
 
 ###### load the modelled retreat rates from water_level_solver
 modelled_retreat = np.load(basepath + 'R_all_modelled_using_median_calcd_water_level_' + community_name + '.npy')
@@ -15,7 +15,9 @@ observed_retreat_years = np.load(basepath + 'input_data/observed_retreat_years_'
 retreat_observed = np.load(basepath + 'input_data/observed_retreat_rates_allyears_' + community_name + '.npy')
 
 ##### plot the cumulative modelled retreat
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(3,4))
+if community_name == 'Mamontovy_Khayata':
+	fig, ax = plt.subplots(figsize=(6,4))
 
 #plt.title('Cumulative cliff retreat using calculated \n median water level: ' + community_name)
 
@@ -24,22 +26,29 @@ width = 0.35
 ax.bar(observed_retreat_years - width/2, np.cumsum(modelled_retreat), width, label = 'Modelled retreat', color='blue')
 ax.bar(observed_retreat_years+ width/2, np.cumsum(retreat_observed), width, label = 'Observed retreat', color = 'orange')
 
-ax.set_ylabel('Cumulative retreat [m]', fontsize=25)
+ax.set_ylabel('Cumulative retreat [m]', fontsize=20)
 
 x = observed_retreat_years  # the label locations
 
 ax.set_xticks(x)
-ax.tick_params('x',rotation=90,pad=1, labelsize=14)
-ax.set_yticks(np.arange(0,176,25))
-ax.tick_params('y', pad=1, labelsize=14)
-plt.legend()
 
-plt.savefig(plot_path + 'Cumulative_modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight')
+plt.xticks(np.arange(min(x), max(x)+1, 2.0))
+
+
+ax.tick_params('x',rotation=90,pad=1, labelsize=15)
+ax.set_yticks(np.arange(0,176,25))
+ax.tick_params('y', pad=1, labelsize=15)
+fig.tight_layout()
+plt.savefig(plot_path + 'Cumulative_modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight', dpi=300)
 plt.show()
 
 
 ##### plot the actual retreat rates
-fig, ax = plt.subplots()
+#fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(3,4))
+if community_name == 'Mamontovy_Khayata':
+        fig, ax = plt.subplots(figsize=(6,4))
+
 
 #plt.title('Cliff retreat using calculated \n median water level: ' + community_name)
 
@@ -48,17 +57,24 @@ width = 0.35
 ax.bar(observed_retreat_years - width/2, modelled_retreat, width, label = 'Modelled retreat', color='blue')
 ax.bar(observed_retreat_years+ width/2, retreat_observed, width, label = 'Observed retreat', color='orange')
 
-ax.set_ylabel('Retreat [m]',fontsize=25)
+ax.set_ylabel('Retreat [m]',fontsize=20)
 
 x = observed_retreat_years  # the label locations
 
-ax.set_xticks(x)
-ax.tick_params('x',rotation=90,pad=1, labelsize=14)
-ax.tick_params('y', pad=1, labelsize=14)
-ax.set_ylim([0,32])
-plt.legend()
+if community_name == 'Mamontovy_Khayata':
+	plt.legend(loc='upper left', prop={'size': 12})
 
-plt.savefig(plot_path + 'modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight')
+ax.set_xticks(x)
+
+#if community_name == 'Mamontovy_Khayata':
+plt.xticks(np.arange(min(x), max(x)+1, 2.0))
+
+ax.tick_params('x',rotation=90,pad=1, labelsize=15)
+ax.tick_params('y', pad=1, labelsize=15)
+ax.set_ylim([0,32])
+#plt.legend()
+fig.tight_layout()
+plt.savefig(plot_path + 'modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight', dpi=300)
 plt.show()
 
 ##### add an error bar based on cliff height change #########################

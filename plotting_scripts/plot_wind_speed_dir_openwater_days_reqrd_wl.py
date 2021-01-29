@@ -5,8 +5,8 @@ import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
 
 
-community_name = 'Mamontovy_Khayata'
-#community_name = 'Drew_Point'
+#community_name = 'Mamontovy_Khayata'
+community_name = 'Drew_Point'
 
 # basepaths
 basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
@@ -107,34 +107,35 @@ water_offset_ts = water_offset_ts[1:]
 
 
 ## make reqrd water level offset and open water days into a bar plot
-#fig, ax = plt.subplots(figsize=(3, 2))
-fig,ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(3,4))
+
+if community_name == 'Mamontovy_Khayata':
+        fig, ax = plt.subplots(figsize=(6,4))
 
 width = 0.35
 
 ax.bar(open_water_days_all_years[:,0].astype(int), open_water_days_all_years[:,1], width, color='blue')
 
-#plt.xlim([year_range[0],year_range[-1] + 1])
-
 ax2 = ax.twinx()
-
 ax2.scatter(year_range, water_offset_ts, marker = '*', color='red', s= 120)
 
 # calculate the median water level and add it as a horizontal line to the plot
 median_reqrd_wl = np.median(water_offset_ts)
-plt.axhline(median_reqrd_wl, color='r',lw=2,ls='dashed', label = 'Median reqrd water level')
+plt.axhline(median_reqrd_wl, color='r',lw=2,ls='dashed', label = 'Median offset')
 
 # calculate the average water level and add it as a horizontal line to the plot
 avg_reqrd_wl = np.mean(water_offset_ts)
-plt.axhline(avg_reqrd_wl,color='k', lw= 2, label = 'Avg reqrd water level')
+plt.axhline(avg_reqrd_wl,color='k', lw= 2, label = 'Average offset')
 
 # the number decides how many timesteps should be skipped before making a tickmark
 ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
 # this number decides how many tickmarks are skipped before the label is put on
-if community_name == 'Mamontovy_Khayata':
-	every_nth = 2
-else:
-	every_nth = 1
+#if community_name == 'Mamontovy_Khayata':
+#	every_nth = 2
+#else:
+#	every_nth = 1
+
+every_nth = 2
 for n, label in enumerate(ax.xaxis.get_ticklabels()):
         if n % every_nth != 0:
                 label.set_visible(False)
@@ -149,10 +150,12 @@ for label in ax2.get_yticklabels():
 	label.set_fontsize(16)
 
 #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-ax2.set_ylabel('Required water level offset [m]', color = 'red', fontsize=16, fontweight='bold', rotation = 270, labelpad = 18)
-ax2.tick_params(axis='y', colors='red')
-ax.set_ylabel('Number open water days', color = 'blue', fontsize=16, fontweight='bold')
-ax.tick_params(axis='y', colors='blue')
+if community_name == 'Drew_Point':
+	ax2.set_ylabel('Required water \nlevel offset [m]', color = 'red', fontsize=18, rotation = 270, labelpad = 40)
+ax2.tick_params(axis='y', colors='red', labelsize=16)
+if community_name == 'Mamontovy_Khayata':
+	ax.set_ylabel('Number open water days', color = 'blue', fontsize=18)
+ax.tick_params(axis='y', colors='blue', labelsize=16)
 
 #plt.axis('tight')
 ax.set_xlim([year_range[0] - width, year_range[-1]+ width])
@@ -160,10 +163,14 @@ ax2.set_xlim([year_range[0] - width ,year_range[-1]+ width])
 
 ax.set_ylim([0,139])
 ax2.set_ylim([-0.3,2.7])
-plt.legend()
-plt.savefig(basepath + 'plots/wind_speed_dir_open_water/owdays_with_wl_offset_' + community_name + '.png', bbox_inches = 'tight')
+
+if community_name == 'Mamontovy_Khayata':
+	plt.legend(loc='upper center', prop={'size': 10})
+
+plt.savefig(basepath + 'plots/wind_speed_dir_open_water/owdays_with_wl_offset_' + community_name + '.png', bbox_inches = 'tight',dpi=300)
 plt.show()
 
+'''
 ######### make a plot to compare the average and median required water levels ##########
 
 fig, ax = plt.subplots()
@@ -204,16 +211,4 @@ plt.ylim(-0.3,2.7)
 plt.legend()
 plt.savefig(basepath + 'plots/reqrd_wl_avg_vs_median_' + community_name + '.png',bbox_inches='tight')
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''
