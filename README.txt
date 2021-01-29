@@ -11,7 +11,7 @@ as well as paths for input/output.
 batch_monte_carlo.sh is the slurm batch script used to run the 
 water_level_solver_for_batch.py, described below.
 
-water_level_solver_for_batch.py simulataneously calculates the required water level offset as described in
+water_level_solver_for_batch.py simultaneously calculates the required water level offset as described in
 the paper, and then uses this offset to simulate the retreat rates.  Once it calculates the water level
 offset, it calls the rbeach_for_batch.py, which is the main erosion model.
 
@@ -35,6 +35,7 @@ was taken from
 ## Both of these scripts below call storm_surge_ERA_Interim.py, which is the storm surge model.
 - Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
 - Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
+- Prudhoe Bay: save_measured_vs_modelled_water_level_prudhoe_only.py
 
 ## Create and apply a mask at timesteps when sea ice concentration is greater than 15%. Save the masked
 ## arrays that will be fed into the erosion model.
@@ -47,3 +48,6 @@ was taken from
 
 ## For model tuning and validation of retreat rates, create a file of observed retreat rates.
 - save_observed_retreat_rates.py
+
+#### Plotting scripts #########
+plotting_scripts/*, including an own readme file in that path.
