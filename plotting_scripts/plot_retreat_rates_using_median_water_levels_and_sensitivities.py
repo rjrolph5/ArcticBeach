@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 plot_path = basepath + 'plots/'
 
-community_name = 'Mamontovy_Khayata'
-#community_name = 'Drew_Point'
+#community_name = 'Mamontovy_Khayata'
+community_name = 'Drew_Point'
 
 ###### load the modelled retreat rates from water_level_solver
 modelled_retreat = np.load(basepath + 'R_all_modelled_using_median_calcd_water_level_' + community_name + '.npy')
