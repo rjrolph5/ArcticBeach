@@ -145,6 +145,27 @@ fig.tight_layout()
 plt.savefig(plot_path + 'modelled_vs_obs_water_level_offset_applied_Tiksi2007.png', bbox_inches='tight',dpi=300)
 plt.show()
 
+############### calculated RMS in response to Reviewer #2 ################
+obs_with_offset = df_3hourly_mean_obs_subset.obs_water_level - mean_offset_from_obs
+modelled = water_level_meters_erai[start_datetime:end_datetime] + mean_offset - mean_offset_from_obs
+
+## have to find intersection of the timestamps
+idx = obs_with_offset.index.intersection(modelled.index)
+
+## truncate based on those intersections
+obs_with_offset_truncated = obs_with_offset[idx]
+modelled_truncated = modelled[idx]
+
+def rmse(observed, modelled):
+	rmse = np.sqrt(np.average((observed - modelled)**2))
+	return rmse
+
+RMSE = rmse(obs_with_offset_truncated, modelled_truncated)
+print('RMSE for water level at MK is :' + str(RMSE))
+
+
+
+
 #### compute stats of obs vs modelled water levels:  range and pearson correlation coeff
 
 wl_obs = df_3hourly_mean_obs_subset.obs_water_level - mean_offset_from_obs
