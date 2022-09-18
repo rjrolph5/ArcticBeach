@@ -24,6 +24,7 @@ def geo_idx(dd, dd_array):
 	geo_idx = (np.abs(dd_array - dd)).argmin()
 	return geo_idx
 
+
 def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 
 	## specify input filenames
@@ -102,21 +103,27 @@ def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 	# find peak wave period at the selected lat/lon
 	wave_period_site = wave_period[:, lat_idx, lon_idx]
 
+	print(lat_idx)
+	print(lon_idx)
+
 	# interpolate to every 3h so the size of the other variable arrays are the same.
 	# make into a dataframe
 	wave_period_site_df = pd.DataFrame({'timestamps': dates_wave_period, 'wave_period_site': wave_period_site.data}, columns = ['timestamps', 'wave_period_site'])
 	# set index of the dataframe to be the timestamps
 	wave_period_site_df = wave_period_site_df.set_index(pd.DatetimeIndex(wave_period_site_df['timestamps']))
 	# make anything less than 0 nan
-	wave_period_site_df_no_interp = wave_period_site_df.mask(wave_period_site_df < 0) # defaults to nan where condition is met if mask value not specified
-	wave_period_site_df = wave_period_site_df.mask(wave_period_site_df < 0) # defaults to nan where condition is met if mask value not specified. in this case it puts nan in negative wave period values (nan in original dataset for wave period is -32767.0).
+	#wave_period_site_df_no_interp = wave_period_site_df.mask(wave_period_site_df < 0) # defaults to nan where condition is met if mask value not specified
+	wave_period_site_df = wave_period_site_df.mask(wave_period_site_df.wave_period_site < 0) # defaults to nan where condition is met if mask value not specified. in this case it puts nan in negative wave period values (nan in original dataset for wave period is -32767.0).
+	print(wave_period_site_df)
 	wave_period_site_df_check = wave_period_site_df.copy()
 	# interp the wave period df to 3h, so it is the same as the wind timesteps.
-	i = pd.DatetimeIndex(start=wave_period_site_df.index.min(), end=wave_period_site_df.index.max(), freq = '3H')
+	#i = pd.DatetimeIndex(start=wave_period_site_df.index.min(), end=wave_period_site_df.index.max(), freq = '3H')
+	#i = pd.DatetimeIndex(date_range(wave_period_site_df.index.min(), wave_period_site_df.index.max()), freq = '3H')
 	# limit the number of nans to the max number that can be filled by the 12h to 3h gap
-	wave_period_site_df = wave_period_site_df.reindex(i).interpolate(method='linear', limit=9)
+	#wave_period_site_df = wave_period_site_df.reindex(i).interpolate(method='linear', limit=9)
 	#>>> np.where(wave_period_site_df.wave_period_site==np.nanmax(wave_period_site_df.wave_period_site))
 	#(array([1808, 2288]),)
+	wave_period_site_df = wave_period_site_df.resample('3H').ffill()
 	# add the timestamps to the df
 	first_date_waves_interpd = wave_period_site_df.index[0]
 	last_date_waves_interpd = wave_period_site_df.index[-1]
@@ -130,6 +137,8 @@ def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 	# this interactive plotting check on interpolation function checks out, ok to use the interpolated data.
 	'''
 	# should be in one dataframe
+	df_ws_wd_sst = df_ws_wd_sst.rename(columns={'timestamps': 'times'})
+	wave_period_site_df = wave_period_site_df.rename(columns={'timestamps': 'times'})
 	ws_wd_sst_waveperiod_df = pd.merge_asof(df_ws_wd_sst, wave_period_site_df, on='timestamps')
 
 	# set new indices
@@ -175,19 +184,23 @@ def read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime):
 	# set index of the dataframe to be the timestamps
 	swh_site_df = swh_site_df.set_index(pd.DatetimeIndex(swh_site_df['timestamps']))
 	# make anything less than 0 nan
-	swh_site_df = swh_site_df.mask(swh_site_df < 0) # defaults to nan where condition is met if mask value not specified
+	swh_site_df = swh_site_df.mask(swh_site_df.swh_site < 0) # defaults to nan where condition is met if mask value not specified
 
 	swh_site_check = swh_site_df.copy()
 
 	# interp the wave period df to 3h, so it is the same as the wind timesteps.
-	i = pd.DatetimeIndex(start=swh_site_df.index.min(), end=swh_site_df.index.max(), freq = '3H')
-	swh_site_df = swh_site_df.reindex(i).interpolate(method='linear', limit=3)
+	#i = pd.DatetimeIndex(start=swh_site_df.index.min(), end=swh_site_df.index.max(), freq = '3H')
+	#swh_site_df = swh_site_df.reindex(i).interpolate(method='linear', limit=3)
+	swh_site_df = swh_site_df.resample('3H').ffill()
 
 	# add the timestamps to the intpd df
 	first_date_swh_interpd = swh_site_df.index[0]
 	last_date_swh_interpd = swh_site_df.index[-1]
 	# adding a timestamps column with the same daterange index so you can merge df below
 	swh_site_df['timestamps'] = pd.date_range(first_date_swh_interpd,last_date_swh_interpd,freq='3H')
+	swh_site_df = swh_site_df.rename(columns={'timestamps': 'times'})
+	ws_wd_sst_waveperiod_df = ws_wd_sst_waveperiod_df.rename(columns={'timestamps': 'times'})
+
 
 	# merge all variables into the final dataframe
 	ws_wd_sst_waveperiod_swh_df = pd.merge_asof(ws_wd_sst_waveperiod_df, swh_site_df, on='timestamps')

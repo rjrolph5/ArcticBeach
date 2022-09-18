@@ -5,7 +5,8 @@ basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
 plot_path = basepath + 'plots/'
 
 #community_name = 'Mamontovy_Khayata'
-community_name = 'Drew_Point'
+#community_name = 'Drew_Point'
+community_name = 'veslobogen'
 
 ###### load the modelled retreat rates from water_level_solver
 modelled_retreat = np.load(basepath + 'R_all_modelled_using_median_calcd_water_level_' + community_name + '.npy')
@@ -32,11 +33,15 @@ x = observed_retreat_years  # the label locations
 
 ax.set_xticks(x)
 
-plt.xticks(np.arange(min(x), max(x)+1, 2.0))
 
 
 ax.tick_params('x',rotation=90,pad=1, labelsize=15)
-ax.set_yticks(np.arange(0,176,25))
+if community_name == 'veslobogen':
+	ax.set_yticks(np.arange(0, 0.16, 0.05))
+	plt.xticks(np.arange(min(x), max(x)+1, 1.0))
+else:
+	ax.set_yticks(np.arange(0,176,25))
+	plt.xticks(np.arange(min(x), max(x)+1, 2.0))
 ax.tick_params('y', pad=1, labelsize=15)
 fig.tight_layout()
 plt.savefig(plot_path + 'Cumulative_modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight', dpi=300)
@@ -66,12 +71,17 @@ if community_name == 'Mamontovy_Khayata':
 
 ax.set_xticks(x)
 
-#if community_name == 'Mamontovy_Khayata':
-plt.xticks(np.arange(min(x), max(x)+1, 2.0))
+if community_name == 'veslobogen':
+	plt.xticks(np.arange(min(x), max(x)+1, 1.0))
+else:
+	plt.xticks(np.arange(min(x), max(x)+1, 2.0))
 
 ax.tick_params('x',rotation=90,pad=1, labelsize=15)
 ax.tick_params('y', pad=1, labelsize=15)
-ax.set_ylim([0,32])
+if community_name == 'veslobogen':
+	ax.set_ylim([0,0.1])
+else:
+	ax.set_ylim([0,32])
 #plt.legend()
 fig.tight_layout()
 plt.savefig(plot_path + 'modelled_vs_observed_retreat_using_median_reqrd_wl' + str(community_name) + '.png', bbox_inches = 'tight', dpi=300)

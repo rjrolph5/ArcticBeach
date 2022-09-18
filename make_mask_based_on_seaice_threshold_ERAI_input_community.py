@@ -17,8 +17,9 @@ from mpl_toolkits.basemap import Basemap, addcyclic
 import ERA_interim_read_with_wave_and_sst
 
 #study_site = 'Mamontovy_Khayata'
-study_site = 'prudhoe_bay'
+#study_site = 'prudhoe_bay'
 #study_site = 'Drew_Point'
+study_site = 'veslobogen'
 
 print(study_site)
 
@@ -52,6 +53,13 @@ if study_site == 'Mamontovy_Khayata':
 	lon_site = np.load(npy_path + 'lon_offshore_site_ERAI_mamontovy_hayata.npy')
 	#year_range = np.arange(1995,1996) # up to year end
 	year_range = np.arange(1995,2019) # up to year end
+
+if study_site == 'veslobogen':
+	npy_path = basepath + 'input_data/storm_surge/veslobogen/'
+	lat_site = np.load(npy_path + 'lat_offshore_site_ERAI_veslobogen.npy') # [degrees North] this is the point offshore
+	lon_site = np.load(npy_path + 'lon_offshore_site_ERAI_veslobogen.npy')
+	year_range = np.arange(2014,2018) # up to year end
+
 
 def geo_idx(dd, dd_array):
 	"""
@@ -146,6 +154,7 @@ for year in year_range:
 
 	df['mask_for_wl'] = mask_for_wl
 
+	df = df.drop(columns=['timestamps', 'times_x', 'times_y'])
 	df_masked = df.loc[:,'u_wind10m_site':'swh_site'].multiply(df['mask_for_wl'],axis='index')
 	# append the columns that were not mutliplied 
 	df_masked['sicn'] = sicn_offshore_timesubset

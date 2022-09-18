@@ -12,7 +12,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # set basepath
-basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/' # where txt or csv of bathymetry information is saved.
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/' # where txt or csv 
+#of bathymetry information is saved.
 # set path to save npy bathymetry output file.
 ofilepath = basepath + 'input_data/storm_surge/'
 
@@ -48,8 +49,9 @@ depth_bykovsky = np.flip(depth_bykovsky[:-2])
 
 np.save(ofilepath + 'Mamontovy_Khayata/depth_bykovsky.npy',depth_bykovsky)
 
-# the numpy file needs to be saved from offshore inwards, so the greatest depth has index 0.  
-# however, for plotting purposes, we will reverse this so index 0 is the beach depth. 
+# the numpy file needs to be saved from offshore inwards, so the greatest depth has 
+# index 0.  however, for plotting purposes, we will reverse this so index 0 is the 
+# beach depth.
 
 fig, ax = plt.subplots()
 plt.title('Bathymetry input used to calculate storm surge')

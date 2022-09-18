@@ -21,13 +21,14 @@ def storm_surge_from_era_interim(lat_site, lon_site, start_datetime, end_datetim
 	df, lat_site_ERA, lon_site_ERA = ERA_interim_read_with_wave_and_sst.read_ERAInterim(lat_site, lon_site, start_datetime, end_datetime)
 
 	# load bathymetry
-	depthHR =  np.load(bathymetry_ifile) # see script called 'bathymetry_produce_for_drew_point.py' to see how this higher resolution bathy file was produced.
+	depthHR =  np.load(bathymetry_ifile)[:-2] # see script called 'bathymetry_produce_for_drew_point.py' to see how this higher resolution bathy file was produced.
 
 	# change wind direction from reanalysis met convention (where wind is coming from, degrees clockwise from north) to the beach-specific coordinate system. in other words, find the angle between onshore (x-axis) and local wind vector. 
 	wind_dir_new = df.wind_direction + 360 - shorenormal_angle_from_north
 
 	inds_where_new_wd_over_360 = np.where(wind_dir_new > 360)[0]
-	wind_dir_new.iloc[inds_where_new_wd_over_360] = wind_dir_new - 360
+	winds_minus_360_df = wind_dir_new - 360
+	wind_dir_new.iloc[inds_where_new_wd_over_360] = winds_minus_360_df.iloc[inds_where_new_wd_over_360]
 
 	ws = df.wind_speed
 

@@ -23,19 +23,23 @@ offset, it calls the rbeach_for_batch.py, which is the main erosion model.
         - Averages the forcing to 3 hourly means if not supplied in that time resolution already.
         - Outputs a dataframe of forcing data, latitude and longitude of the grid cell the reanalysis data
 was taken from
+	- This is called by storm_surge_ERA_Interim.py (see below)
 
 ## Use the plotting scripts to identify the offshore grid cell for each community
 - Mamontovy Khayata:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_bykovsky_mamontovy_khayata.py
 - Drew Point:  make_mask_with_extra_figures_single_year_sicn_threshold_ERAI_drew_point.py
+- Veslobogen: generate_grid_maps_and_choose_forcing_grid_cells_veslobogen.py
 
 ## Generate and/or load a bathymetry file for use in the storm surge model.
 - bathymetry_produce_for_drew_point_and_bykovsky.py
+- bathymetry_produce_for_veslobogen.py
 
 ## Calculate the unmasked water levels at the offshore grid cell you selected from the plotting script above.
 ## Both of these scripts below call storm_surge_ERA_Interim.py, which is the storm surge model.
 - Mamontovy Khayata: calculate_modelled_water_levels_bykovsky.py
 - Drew Point: save_measured_vs_modelled_water_level_drew_point_or_prudhoe.py
 - Prudhoe Bay: save_measured_vs_modelled_water_level_prudhoe_only.py
+- Veslobogen: calculate_modelled_water_levels_veslobogen.py
 
 ## Create and apply a mask at timesteps when sea ice concentration is greater than 15%. Save the masked
 ## arrays that will be fed into the erosion model.

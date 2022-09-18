@@ -29,14 +29,21 @@ if global_variables.community_name == 'Mamontovy_Khayata':
 	year_final = 2019 # up to (not including) year end
 	year_final_for_median = 2019
 
+if global_variables.community_name == 'veslobogen':
+	# Mamontovy
+	year_init = 2014
+	year_init_for_median = 2014
+	year_final = 2017 # up to (not including) year end
+	year_final_for_median = 2017
+
 ##### This indicates if you would like to run the erosion model using the median of the cailibrated water level offsets. This corresponds to the default water level offset values used for the default run when comparing Monte 
 ##### Carlo sensitivity tests.
 wl_all = np.array([1])
+water_level_offset_path = global_variables.npy_path + 'required_offset_to_match_observed_retreat/avg/'
 if use_median_water_level_offset == 'True':
 	# find median water level
 	for yr in np.arange(year_init_for_median, year_final_for_median):
 		# specify the paths the calculated water level offset should be saved in,  directory by experiment, filename by year.
-		water_level_offset_path = global_variables.npy_path + 'required_offset_to_match_observed_retreat/avg/'
 		wl = np.load(water_level_offset_path + 'water_offset_reqrd_to_match_obs_' + str(yr) + '.npy')
 		wl_all = np.append(wl_all,wl)
 

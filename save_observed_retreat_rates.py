@@ -1,6 +1,6 @@
 import numpy as np
 
-basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
+basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/input_data/'
 
 
 ## Bykovsky-- Mamontovy_Khayata
@@ -48,5 +48,11 @@ np.save(basepath + 'observed_retreat_years_Drew_Point.npy', observed_retreat_yea
 np.save(basepath + 'observed_retreat_rates_allyears_Drew_Point.npy', retreat_observed)
 
 
+## Veslobogen
+# from Lim et al. (2020) "Arctic rock coast responses under a changing climate"
+retreat_observed = np.array([0.019, 0.017, 0.010])
+observed_retreat_years = np.array([2014, 2015, 2016])
 
+np.save(basepath + 'observed_retreat_years_veslobogen.npy', observed_retreat_years)
+np.save(basepath + 'observed_retreat_rates_allyears_veslobogen.npy', retreat_observed)
 

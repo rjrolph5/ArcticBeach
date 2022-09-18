@@ -6,7 +6,8 @@ import matplotlib.ticker as ticker
 
 
 #community_name = 'Mamontovy_Khayata'
-community_name = 'Drew_Point'
+#community_name = 'Drew_Point'
+community_name = 'veslobogen'
 
 # basepaths
 basepath = '/permarisk/output/becca_erosion_model/ArcticBeach/'
@@ -14,11 +15,14 @@ npy_path = basepath + 'input_data/storm_surge/'+ community_name +'/'
 
 if community_name == 'Mamontovy_Khayata':
 	year_range = np.arange(1995,2019) # up to year end
-	ifile_forcing_base = 'ERAI_forcings_Mamontovy_Khayata_masked_'
 
 if community_name == 'Drew_Point':
 	year_range = np.arange(2007,2017)
-	ifile_forcing_base = 'ERAI_forcings_Drew_Point_masked_'
+
+if community_name == 'veslobogen':
+	year_range = np.arange(2014,2017)
+
+ifile_forcing_base = 'ERAI_forcings_' + community_name + '_masked_'
 
 # initialize the open water days array
 open_water_days_all_years = np.empty((year_range.shape[0],2))
@@ -90,12 +94,6 @@ experiment_name = 'avg'
 
 wl_offset_path = basepath + 'input_data/storm_surge/' + community_name + '/required_offset_to_match_observed_retreat/' + experiment_name + '/'
 
-if community_name == 'Mamontovy_Khayata':
-        year_range = np.arange(1995, 2019)
-
-if community_name == 'Drew_Point':
-        year_range = np.arange(2007, 2017)
-
 water_offset_ts = np.ones(1)
 for year in year_range:
         ifile = wl_offset_path + 'water_offset_reqrd_to_match_obs_' + str(year) + '.npy'
@@ -150,10 +148,12 @@ for label in ax2.get_yticklabels():
 	label.set_fontsize(16)
 
 #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+# set ylabel
 if community_name == 'Drew_Point':
 	ax2.set_ylabel('Required water \nlevel offset [m]', color = 'red', fontsize=18, rotation = 270, labelpad = 40)
 ax2.tick_params(axis='y', colors='red', labelsize=16)
-if community_name == 'Mamontovy_Khayata':
+#if community_name == 'Mamontovy_Khayata':
+if community_name == 'veslobogen':
 	ax.set_ylabel('Number open water days', color = 'blue', fontsize=18)
 ax.tick_params(axis='y', colors='blue', labelsize=16)
 

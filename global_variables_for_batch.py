@@ -6,7 +6,8 @@ import os, shutil
 # Use this script, global_variables_for_batch.py, to specify study site, cliff and beach parameters (with the option of a uniform distribution within a range of values for the Monte Carlo sensitivity tests), some model constants, 
 # as well as paths for input/output.
 
-community_name = 'Mamontovy_Khayata'
+community_name = 'veslobogen'
+#community_name = 'Mamontovy_Khayata'
 #community_name = 'Drew_Point'
 
 # Initialize year, updated in the water_level_solver.py module
@@ -15,6 +16,9 @@ if community_name == 'Mamontovy_Khayata':
 
 if community_name == 'Drew_Point':
 	year=2007 # initial year retreat rate obs exist that you will use.
+
+if community_name == 'veslobogen':
+	year=2014
 
 # Define start and end dates, but make sure they correspond to your available forcing data.
 start_month = 'Jan'
@@ -123,6 +127,42 @@ if community_name == 'Drew_Point':
 	# unfrozen cliff sediment thickness (Bc)
 	cliff_thaw_depth = np.random.uniform(0.1,0.5)
 	cliff_params = cliff_parameters(3, 60, cliff_thaw_depth, 0.1, 0.43, 0.8, 0.002)
+
+	# cliff coarse sediment volume per unit volume unfrozen cliff sediment (Pc) (if thaw depth is small, then this does not matter 
+	#cliff_coarse_fraction_unfrozen_sed = np.random.uniform(0.05, 0.2)
+	#cliff_params = cliff_parameters(3, 60, 0.2, cliff_coarse_fraction_unfrozen_sed, 0.43, 0.8, 0.002)
+
+	# cliff ice content change experiment
+	#cliff_ice_content = np.random.uniform(0.6, 0.9) # ice volume per unit volume of frozen cliff sediment
+	#cliff_params = cliff_parameters(3, 60, 0.2, 0.1, 0.43, cliff_ice_content, 0.002)
+
+	# full uncertainty
+	#cliff_params = cliff_parameters(cliff_height, cliff_angle, cliff_thaw_depth, cliff_coarse_fraction_unfrozen_sed, 0.43, cliff_ice_content, 0.002)
+
+	######## beach ##########
+	#			       (Wb,    thb,   Bb,   Pb,  vb, ksb)
+	beach_params = beach_parameters(0.01, 0.06,   1,   0.6, 0.6, 0.002)
+
+
+if community_name == 'veslobogen':
+
+	# Specify cliff, beach, and water parameter values.
+
+	####### cliff #########
+	#                              (Hc, thc, Bc,  Pc,   vc, nic,  ksc)
+	cliff_params = cliff_parameters(8, 60, 0.2, 0.1, 0.43, 0.01, 0.002)
+
+	# cliff height change experiment
+	#cliff_height = np.random.uniform(1,10)
+	#cliff_params = cliff_parameters(cliff_height, 60, 0.2, 0.1, 0.43, 0.8, 0.002)
+
+	# cliff angle change experiment
+	#cliff_angle = np.random.uniform(45, 90) # ice volume per unit volume of frozen cliff sediment
+	#cliff_params = cliff_parameters(3, cliff_angle, 0.2, 0.1, 0.43, 0.8, 0.002)
+
+	# unfrozen cliff sediment thickness (Bc)
+	#cliff_thaw_depth = np.random.uniform(0.0000001,0.00000005)
+	#cliff_params = cliff_parameters(3, 60, cliff_thaw_depth, 0.1, 0.43, 0.8, 0.002)
 
 	# cliff coarse sediment volume per unit volume unfrozen cliff sediment (Pc) (if thaw depth is small, then this does not matter 
 	#cliff_coarse_fraction_unfrozen_sed = np.random.uniform(0.05, 0.2)
